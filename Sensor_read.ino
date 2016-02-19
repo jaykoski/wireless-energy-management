@@ -1,18 +1,16 @@
 #include <Sensirion.h>
 
 #define ENA_ERRCHK  // Enable error checking code
-#define FIVEMIN (1000UL * 60 * 1) //Defining temperature check every 5min
 
 const byte dataPin =  2;                 // SHTxx serial data
 const byte sclkPin =  3;                 // SHTxx serial clock
 const byte ledPin  = 13;                 // Arduino built-in LED
-const unsigned long TRHSTEP   = 5000UL;  // Sensor query period
+const unsigned long TRHSTEP   = 60000UL;  // Sensor query period, Getting readins every 1min.
 const unsigned long BLINKSTEP =  250UL;  // LED blink period
 
 Sensirion sht = Sensirion(dataPin, sclkPin);
 
 unsigned int rawData;
-unsigned long rolltime = millis() + FIVEMIN; //Timer every 5mins
 float temperature;
 float humidity;
 float dewpoint;
@@ -56,7 +54,6 @@ void setup() {
 }
 
 void loop() {
-  if((long)(millis() - rolltime) >= 0) {
   unsigned long curMillis = millis();          // Get current time
 
 
@@ -87,11 +84,9 @@ void loop() {
       measActive = false;
       humidity = sht.calcHumi(rawData, temperature); // Convert raw sensor data
       dewpoint = sht.calcDewpoint(humidity, temperature);
-      rolltime += FIVEMIN;
       logData();
     }
     }
-  }
  }
 
 
