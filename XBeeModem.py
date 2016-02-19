@@ -32,29 +32,28 @@ if __name__ == '__main__':
     # post startup message to other XBee's and at stdout
     serial.writelines("RPi #1 is up and running.\r\n")
     print "RPi #1 is up and running."
-    datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
-    print datetimeWrite
     try:
         while True:
             # read a line from XBee and convert it from b'xxx\r\n' to xxx and
             # print at stdout
             line = serial.readline().decode('utf-8')
             if line:
+		datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
                 print line
 		sql = ("""INSERT INTO tempLog (datetime,temperature) VALUES (%s,%s)""",(datetimeWrite,line))
 		print "Writing to database.."
-		#cur.execute(*sql)
-		#db.commit()
+		cur.execute(*sql)
+		db.commit()
             # read data from the keyboard (i.e. stdin) and send via the XBee
             # modem
             try:
-                 #line = sys.stdin.readline()
+                 line = sys.stdin.readline()
                  serial.writelines(line)
 		 cur.execute(*sql)
 		 db.commit()
             except IOError:
                 time.sleep(0.1)
-                continue
+#                continue
 
     except KeyboardInterrupt:
         printc("\n*** Ctrl-C keyboard interrupt ***", ERROR_TEXT)
