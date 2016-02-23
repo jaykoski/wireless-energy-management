@@ -92,14 +92,10 @@ void loop() {
 
 void logData() {
   Serial.print(temperature);
-  /*
-  Serial.print("Temppi = ");   Serial.print(temperature);
-  Serial.print(" C, Humidity = ");  Serial.print(humidity);
-  Serial.print(" %, Dewpoint = ");  Serial.print(dewpoint);
-  Serial.println(" C");
-  */
-
-  
+  Serial.print(" \t");
+  Serial.print(humidity);       //Printing values
+  Serial.print(" \t");
+  Serial.print(dewpoint); 
 }
 
 // The following code is only used with error checking enabled

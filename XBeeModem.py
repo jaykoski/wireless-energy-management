@@ -37,10 +37,11 @@ if __name__ == '__main__':
             # read a line from XBee and convert it from b'xxx\r\n' to xxx and
             # print at stdout
             line = serial.readline().decode('utf-8')
+	    pieces = line.split("\t") #split the data by tab
             if line:
 		datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
                 print line
-		sql = ("""INSERT INTO tempLog (datetime,temperature) VALUES (%s,%s)""",(datetimeWrite,line))
+		sql = ("""INSERT INTO tempLog (datetime,temperature,humidity,dewpoint) VALUES (%s,%s,%s,%s)""",(datetimeWrite,pieces[0],pieces[1],pieces[2]))
 		print "Writing to database.."
 		cur.execute(*sql)
 		db.commit()
@@ -49,11 +50,9 @@ if __name__ == '__main__':
             try:
                  line = sys.stdin.readline()
                  serial.writelines(line)
-		 cur.execute(*sql)
-		 db.commit()
             except IOError:
                 time.sleep(0.1)
-#                continue
+                continue
 
     except KeyboardInterrupt:
         printc("\n*** Ctrl-C keyboard interrupt ***", ERROR_TEXT)
